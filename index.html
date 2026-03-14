@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Area 11 | Catálogo Exclusivo</title>
+    <style>
+        /* Estilos Generales */
+        body { 
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            background-color: #ffffff; 
+            color: #111111; 
+        }
+        
+        /* Encabezado */
+        header { 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: center; 
+            padding: 20px 40px; 
+            border-bottom: 1px solid #eaeaea; 
+        }
+        .logo { 
+            font-size: 28px; 
+            font-weight: 800; 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+        }
+        .secret-admin input { 
+            padding: 10px; 
+            border: 1px solid #e5e5e5; 
+            border-radius: 4px;
+            font-size: 14px;
+            outline: none;
+        }
+
+        /* Sección Principal (Hero) */
+        .hero { 
+            text-align: center; 
+            padding: 80px 20px; 
+            background-color: #fcfcfc; 
+        }
+        .hero h1 { 
+            font-size: 42px; 
+            margin-bottom: 10px; 
+            font-weight: 400;
+        }
+        .hero p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        /* Cuadrícula de Catálogo */
+        .catalog { 
+            display: grid; 
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 40px; 
+            padding: 60px 40px; 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        .product-card { 
+            cursor: pointer; 
+            transition: transform 0.3s ease; 
+        }
+        .product-card:hover { 
+            transform: translateY(-5px); 
+        }
+        .product-image { 
+            width: 100%; 
+            height: 350px; 
+            object-fit: cover; 
+            background-color: #f0f0f0; 
+            border-radius: 4px;
+        }
+        .product-info { 
+            padding: 15px 0; 
+            display: flex; 
+            justify-content: space-between; 
+            align-items: flex-start; 
+        }
+        .product-name { 
+            font-weight: 600; 
+            font-size: 16px; 
+            margin-bottom: 5px;
+        }
+        .product-price { 
+            color: #666; 
+            font-size: 15px;
+        }
+
+        /* Botón Modo Admin Oculto */
+        .edit-btn { 
+            display: none; 
+            background: #111; 
+            color: white; 
+            border: none; 
+            padding: 8px 12px; 
+            cursor: pointer; 
+            border-radius: 4px;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+        /* Cuando el body tiene la clase admin-mode, mostramos el botón */
+        .admin-mode .edit-btn { 
+            display: inline-block; 
+        }
+
+        /* Ventanas Emergentes (Modales) */
+        .modal { 
+            display: none; 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: rgba(0,0,0,0.85); 
+            align-items: center; 
+            justify-content: center; 
+            z-index: 1000;
+        }
+        .modal-content { 
+            background: white; 
+            padding: 40px; 
+            max-width: 700px; 
+            width: 90%; 
+            max-height: 90vh; 
+            overflow-y: auto; 
+            position: relative; 
+            border-radius: 8px;
+        }
+        .close { 
+            position: absolute; 
+            top: 20px; 
+            right: 25px; 
+            font-size: 28px; 
+            cursor: pointer; 
+            color: #999;
+        }
+        .close:hover { color: #111; }
+        
+        /* Galería dentro del modal */
+        .main-modal-img { 
+            width: 100%; 
+            height: 400px; 
+            object-fit: cover; 
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+        .modal-images { 
+            display: flex; 
+            gap: 15px; 
+            overflow-x: auto; 
+            margin-bottom: 25px; 
+        }
+        .modal-images img { 
+            height: 80px; 
+            width: 80px;
+            object-fit: cover; 
+            cursor: pointer; 
+            border: 2px solid transparent; 
+            border-radius: 4px;
+        }
+        .modal-images img:hover { border-color: #111; }
+
+        /* Botones de Contacto */
+        .contact-btns { 
+            margin-top: 30px; 
+            display: flex; 
+            gap: 15px; 
+            flex-wrap: wrap;
+        }
+        .btn { 
+            padding: 15px 24px; 
+            text-decoration: none; 
+            color: white; 
+            text-align: center; 
+            flex: 1; 
+            text-transform: uppercase; 
+            font-size: 14px; 
+            font-weight: 600;
+            letter-spacing: 1px; 
+            border-radius: 4px;
+            border: none;
+            cursor: pointer;
+        }
+        .btn-wa { background: #25D366; }
+        .btn-wa:hover { background: #20BA56; }
+        .btn-ig { background: #E1306C; }
+        .btn-ig:hover { background: #C1285C; }
+        .btn-save { background: #111; margin-top: 10px; }
+
+        /* Formulario Admin */
+        .admin-form { display: flex; flex-direction: column; gap: 15px; margin-top: 20px;}
+        .admin-form input { padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px;}
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">Area 11</div>
+        <div class="secret-admin">
+            <input type="password" id="discount-code" placeholder="Código de descuento" onkeyup="verificarAdmin()">
+        </div>
+    </header>
+
+    <section class="hero">
+        <h1>Jerseys de Élite</h1>
+        <p>Explora nuestro catálogo de alto rendimiento.</p>
+    </section>
+
+    <div class="catalog" id="catalog"></div>
+
+    <div class="modal" id="view-modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('view-modal')">&times;</span>
+            <img id="main-view-img" class="main-modal-img" src="" alt="Jersey Area 11">
+            <div class="modal-images" id="gallery-container"></div>
+            
+            <h2 id="view-name" style="margin: 0 0 5px 0;"></h2>
+            <p id="view-price" style="font-size: 1.2em; color: #666; margin: 0;"></p>
+            
+            <div class="contact-btns">
+                <a href="https://wa.me/526121174569" target="_blank" class="btn btn-wa">Comprar en WhatsApp</a>
+                <a href="https://www.instagram.com/4rea.11/" target="_blank" class="btn btn-ig">Ver en Instagram</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal" id="edit-modal">
+        <div class="modal-content">
+            <span class="close" onclick="cerrarModal('edit-modal')">&times;</span>
+            <h2>Modificar Producto</h2>
+            <div class="admin-form">
+                <label>Nombre del Jersey:</label>
+                <input type="text" id="edit-name">
+                
+                <label>Precio:</label>
+                <input type="text" id="edit-price">
+                
+                <label>URL de Imagen Principal (Catálogo):</label>
+                <input type="text" id="edit-main-img">
+                
+                <label>URL de Imagen Adicional 1 (Galería):</label>
+                <input type="text" id="edit-gallery-1">
+                
+                <label>URL de Imagen Adicional 2 (Galería):</label>
+                <input type="text" id="edit-gallery-2">
+                
+                <button class="btn btn-save" onclick="guardarCambios()">Guardar Cambios</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Datos iniciales de prueba (Puedes poner links de tus propias fotos de Imgur, Postimages, etc.)
+        let productos = JSON.parse(localStorage.getItem('area11_productos')) || [
+            {
+                id: 1,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+          {
+                id: 2,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+          },
+            {
+                id: 3,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 4,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 5,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 6,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 7,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 8,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+ {
+                id: 9,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 10,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+            {
+                id: 11,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 12,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 13,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 14,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 15,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 16,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+ {
+                id: 17,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 18,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+            {
+                id: 19,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 20,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 21,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 22,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 23,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 24,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+ {
+                id: 25,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 26,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+            {
+                id: 27,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 28,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 29,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 30,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 31,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 32,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+ {
+                id: 33,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 34,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+            {
+                id: 35,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 36,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 37,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 38,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 39,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 40,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+ {
+                id: 41,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 42,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+            {
+                id: 43,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 44,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 45,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 46,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 47,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 48,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+ {
+                id: 49,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 50,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+            {
+                id: 51,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 52,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 53,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 54,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+  {
+                id: 55,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            {
+                id: 56,
+                name: "Jersey Real Madrid Local",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600",
+                gallery: ["https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600", "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600"]
+            }
+ {
+                id: 57,
+                name: "Jersey FC Barcelona Retro",
+                price: "$600 MXN",
+                mainImg: "https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600",
+                gallery: ["https://images.unsplash.com/photo-1614631446501-abcf76949eca?w=600", "https://images.unsplash.com/photo-1599305090598-fe179d501227?w=600"]
+            },
+            
+        ];
+
+        let idEdicionActual = null;
+
+        // Función para pintar el catálogo en pantalla
+        function renderizarProductos() {
+            const catalogo = document.getElementById('catalog');
+            catalogo.innerHTML = '';
+            productos.forEach(p => {
+                catalogo.innerHTML += `
+                    <div class="product-card">
+                        <img src="${p.mainImg}" alt="${p.name}" class="product-image" onclick="abrirVistaProducto(${p.id})">
+                        <div class="product-info">
+                            <div>
+                                <div class="product-name">${p.name}</div>
+                                <div class="product-price">${p.price}</div>
+                            </div>
+                            <button class="edit-btn" onclick="abrirModalEdicion(${p.id})">Editar</button>
+                        </div>
+                    </div>
+                `;
+            });
+        }
+
+        // Detecta si se ingresó el código correcto
+        function verificarAdmin() {
+            const codigo = document.getElementById('discount-code').value;
+            if (codigo === '04050607') {
+                document.body.classList.add('admin-mode');
+            } else {
+                document.body.classList.remove('admin-mode');
+            }
+        }
+
+        // Abre el modal para ver detalles de compra
+        function abrirVistaProducto(id) {
+            const p = productos.find(x => x.id === id);
+            document.getElementById('main-view-img').src = p.mainImg;
+            document.getElementById('view-name').innerText = p.name;
+            document.getElementById('view-price').innerText = p.price;
+            
+            const galeria = document.getElementById('gallery-container');
+            galeria.innerHTML = '';
+            
+            // Si el producto tiene imágenes extra, las muestra en miniatura
+            if (p.gallery && p.gallery.length > 0) {
+                p.gallery.forEach(imgUrl => {
+                    if(imgUrl.trim() !== "") {
+                        galeria.innerHTML += `<img src="${imgUrl}" onclick="document.getElementById('main-view-img').src='${imgUrl}'">`;
+                    }
+                });
+            }
+            
+            document.getElementById('view-modal').style.display = 'flex';
+        }
+
+        // Abre el modal de administrador para editar
+        function abrirModalEdicion(id) {
+            idEdicionActual = id;
+            const p = productos.find(x => x.id === id);
+            document.getElementById('edit-name').value = p.name;
+            document.getElementById('edit-price').value = p.price;
+            document.getElementById('edit-main-img').value = p.mainImg;
+            
+            // Cargar galería si existe
+            document.getElementById('edit-gallery-1').value = (p.gallery && p.gallery[0]) ? p.gallery[0] : '';
+            document.getElementById('edit-gallery-2').value = (p.gallery && p.gallery[1]) ? p.gallery[1] : '';
+            
+            document.getElementById('edit-modal').style.display = 'flex';
+        }
+
+        // Guarda los cambios hechos en el panel de administrador
+        function guardarCambios() {
+            const p = productos.find(x => x.id === idEdicionActual);
+            p.name = document.getElementById('edit-name').value;
+            p.price = document.getElementById('edit-price').value;
+            p.mainImg = document.getElementById('edit-main-img').value;
+            
+            // Guarda las imágenes de galería eliminando campos vacíos
+            p.gallery = [
+                document.getElementById('edit-gallery-1').value,
+                document.getElementById('edit-gallery-2').value
+            ].filter(url => url.trim() !== "");
+
+            // Guarda en la memoria del navegador
+            localStorage.setItem('area11_productos', JSON.stringify(productos));
+            renderizarProductos();
+            cerrarModal('edit-modal');
+        }
+
+        function cerrarModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Cierra los modales si haces clic fuera de ellos
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = "none";
+            }
+        }
+
+        // Inicia el sitio cargando los productos
+        renderizarProductos();
+    </script>
+</body>
+</html>

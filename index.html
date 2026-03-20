@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Area 11 | Future Division</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&display=swap" rel="stylesheet">
     <style>
         :root {
             --neon-blue: #00f2ff;
@@ -15,161 +16,102 @@
 
         body { 
             font-family: 'Orbitron', sans-serif; 
-            margin: 0; 
-            padding: 0; 
+            margin: 0; padding: 0; 
             background-color: var(--bg-dark); 
             color: var(--text-main);
+            overflow-x: hidden;
         }
 
         /* Encabezado */
         header { 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            padding: 20px 40px; 
-            background: rgba(22, 22, 26, 0.9);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--neon-blue);
-            position: sticky;
-            top: 0;
-            z-index: 100;
+            display: flex; justify-content: space-between; align-items: center; 
+            padding: 20px 40px; background: rgba(22, 22, 26, 0.9);
+            backdrop-filter: blur(10px); border-bottom: 1px solid var(--neon-blue);
+            position: sticky; top: 0; z-index: 100;
         }
 
         .logo { 
-            font-size: 26px; 
-            font-weight: 900; 
-            letter-spacing: 5px; 
-            color: var(--neon-blue);
-            text-shadow: 0 0 10px var(--neon-blue);
+            font-size: 26px; font-weight: 900; letter-spacing: 5px; 
+            color: var(--neon-blue); text-shadow: 0 0 10px var(--neon-blue); 
         }
 
         .secret-admin input { 
-            background: #000;
-            border: 1px solid #333;
-            color: var(--neon-blue);
-            padding: 8px; 
-            outline: none;
+            background: #000; border: 1px solid #333; color: var(--neon-blue); 
+            padding: 8px; outline: none; font-family: 'Orbitron', sans-serif; font-size: 10px;
         }
 
         /* Hero */
         .hero { 
-            text-align: center; 
-            padding: 100px 20px; 
-            background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0c 100%);
+            text-align: center; padding: 100px 20px; 
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0a0a0c 100%); 
         }
 
         /* Catálogo */
         .catalog { 
-            display: grid; 
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
-            gap: 30px; 
-            padding: 50px 40px; 
-            max-width: 1400px; 
-            margin: 0 auto; 
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); 
+            gap: 30px; padding: 50px 40px; max-width: 1400px; margin: 0 auto; 
         }
 
         .product-card { 
-            background: var(--card-bg);
-            border: 1px solid #222;
-            padding: 10px;
-            transition: 0.4s;
-            position: relative;
+            background: var(--card-bg); border: 1px solid #222; 
+            padding: 10px; transition: 0.4s; position: relative; 
         }
 
         .product-card:hover { 
-            border-color: var(--neon-blue);
-            box-shadow: 0 0 20px rgba(0, 242, 255, 0.2);
+            border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 242, 255, 0.2); 
+            transform: translateY(-5px);
         }
 
-        .product-image { 
-            width: 100%; 
-            height: 380px; 
-            object-fit: cover; 
-            cursor: pointer;
-        }
+        .product-image { width: 100%; height: 380px; object-fit: cover; cursor: pointer; }
 
         .product-info { padding: 15px 5px; }
-        .product-name { display: block; font-size: 14px; text-transform: uppercase; margin-bottom: 5px;}
+        .product-name { display: block; font-size: 14px; text-transform: uppercase; margin-bottom: 5px; color: #fff; }
         .product-price { color: var(--neon-blue); font-weight: bold; }
 
+        /* Admin Buttons */
         .edit-btn { 
-            display: none; 
-            background: none;
-            border: 1px solid var(--neon-blue);
-            color: var(--neon-blue);
-            padding: 5px;
-            cursor: pointer;
-            margin-top: 10px;
-            width: 100%;
+            display: none; background: none; border: 1px solid var(--neon-blue); 
+            color: var(--neon-blue); padding: 8px; cursor: pointer; 
+            margin-top: 10px; width: 100%; font-family: 'Orbitron', sans-serif; font-size: 10px;
         }
         .admin-mode .edit-btn { display: block; }
 
         /* Modales */
         .modal { 
-            display: none; 
-            position: fixed; 
-            top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0,0,0,0.9); 
-            align-items: center; justify-content: center; z-index: 1000;
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; 
+            background: rgba(0,0,0,0.95); align-items: center; justify-content: center; z-index: 1000; 
         }
         .modal-content { 
-            background: #111; 
-            border: 1px solid var(--neon-blue);
-            padding: 30px; 
-            max-width: 450px; 
-            width: 90%; 
-            text-align: center;
+            background: #111; border: 1px solid var(--neon-blue); 
+            padding: 30px; max-width: 450px; width: 90%; text-align: center; position: relative;
         }
 
-        .main-modal-img { width: 100%; height: 350px; object-fit: cover; margin-bottom: 20px; }
+        .main-modal-img { width: 100%; height: 350px; object-fit: cover; margin-bottom: 20px; border-radius: 2px; }
 
-        /* Estilo de los botones circulares de contacto */
-        .contact-section {
-            margin-top: 25px;
-            border-top: 1px solid #222;
-            padding-top: 20px;
+        /* Contacto Estilo Circular */
+        .contact-section { margin-top: 25px; border-top: 1px solid #222; padding-top: 20px; }
+        .contact-text { font-size: 11px; letter-spacing: 2px; color: #888; margin-bottom: 15px; }
+        .circle-btns { display: flex; justify-content: center; gap: 25px; }
+        
+        .circle-btn { 
+            width: 60px; height: 60px; border-radius: 50%; 
+            display: flex; align-items: center; justify-content: center; 
+            font-size: 24px; color: white; text-decoration: none; 
+            transition: 0.3s; border: 1px solid transparent; 
         }
-        .contact-text {
-            font-size: 12px;
-            letter-spacing: 2px;
-            color: #888;
-            margin-bottom: 15px;
-        }
-        .circle-btns {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .circle-btn {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            color: white;
-            text-decoration: none;
-            transition: 0.3s;
-            border: 1px solid transparent;
-        }
-        .btn-wa { background: #25D366; box-shadow: 0 0 10px rgba(37, 211, 102, 0.3); }
-        .btn-ig { background: #E1306C; box-shadow: 0 0 10px rgba(225, 48, 108, 0.3); }
-        .circle-btn:hover {
-            transform: translateY(-5px);
-            filter: brightness(1.2);
-            border-color: white;
-        }
+        .btn-wa { background: #25D366; box-shadow: 0 0 15px rgba(37, 211, 102, 0.2); }
+        .btn-ig { background: #E1306C; box-shadow: 0 0 15px rgba(225, 48, 108, 0.2); }
+        .circle-btn:hover { transform: scale(1.1); filter: brightness(1.2); border-color: #fff; }
 
         /* Formulario Admin */
         .admin-form input { 
-            width: 100%; padding: 12px; margin: 10px 0; 
-            background: #000; border: 1px solid #333; color: #fff;
-            box-sizing: border-box;
+            width: 100%; padding: 12px; margin: 10px 0; background: #000; 
+            border: 1px solid #333; color: #fff; box-sizing: border-box; font-family: sans-serif;
         }
         .btn-save { 
-            background: var(--neon-blue); color: #000; 
-            width: 100%; padding: 15px; border: none; font-weight: bold; cursor: pointer;
+            background: var(--neon-blue); color: #000; width: 100%; 
+            padding: 15px; border: none; font-weight: bold; cursor: pointer; 
+            font-family: 'Orbitron', sans-serif; letter-spacing: 2px;
         }
     </style>
 </head>
@@ -183,8 +125,8 @@
     </header>
 
     <section class="hero">
-        <h1 style="letter-spacing: 10px;">FUTURE DIVISION</h1>
-        <p style="color: var(--neon-blue);">EQUIPAMIENTO DE ÉLITE</p>
+        <h1 style="letter-spacing: 10px; margin: 0;">FUTURE DIVISION</h1>
+        <p style="color: var(--neon-blue); letter-spacing: 5px; font-size: 12px; margin-top: 10px;">SYNC_CLOUD_ENABLED</p>
     </section>
 
     <div class="catalog" id="catalog-grid"></div>
@@ -192,8 +134,8 @@
     <div class="modal" id="view-modal">
         <div class="modal-content">
             <img id="view-img" class="main-modal-img" src="">
-            <h2 id="view-title" style="margin: 0;"></h2>
-            <p id="view-cost" style="margin: 10px 0;"></p>
+            <h2 id="view-title" style="margin: 0; font-size: 18px;"></h2>
+            <p id="view-cost" style="margin: 10px 0; color: var(--neon-blue);"></p>
             
             <div class="contact-section">
                 <div class="contact-text">''CONTACTANOS POR AQUI''</div>
@@ -207,39 +149,64 @@
                 </div>
             </div>
             <br>
-            <button onclick="closeM()" style="background:none; border:none; color:#555; cursor:pointer;">[ CERRAR ]</button>
+            <button onclick="closeM()" style="background:none; border:none; color:#555; cursor:pointer; font-family: 'Orbitron'; font-size: 10px;">[ CERRAR ]</button>
         </div>
     </div>
 
     <div class="modal" id="edit-modal">
         <div class="modal-content">
-            <h3 style="color: var(--neon-blue);">MOD_DATABASE_FILE</h3>
+            <h3 style="color: var(--neon-blue); font-size: 14px;">UPDATE_REMOTE_DATABASE</h3>
             <div class="admin-form">
                 <input type="text" id="in-name" placeholder="NOMBRE DEL JERSEY">
-                <input type="text" id="in-price" placeholder="PRECIO (Ej: $1,299 MXN)">
-                <input type="text" id="in-img" placeholder="URL DE LA IMAGEN">
-                <button class="btn-save" onclick="saveData()">CONFIRMAR CAMBIOS</button>
+                <input type="text" id="in-price" placeholder="PRECIO">
+                <input type="text" id="in-img" placeholder="URL DE IMAGEN (POSTIMAGES)">
+                <button class="btn-save" onclick="saveToFirebase()">ACTUALIZAR NUBE</button>
             </div>
+            <button onclick="closeM()" style="margin-top:15px; background:none; border:none; color:#555; cursor:pointer; font-size: 10px;">[ CANCELAR ]</button>
         </div>
     </div>
 
-    <script>
-        // Genera 67 productos con imágenes futuristas aleatorias por defecto
-        function createDatabase() {
-            let data = [];
-            for(let i=1; i<=67; i++) {
-                data.push({
-                    id: i,
-                    name: `Jersey ${i}`,
-                    price: `$600 MXN`,
-                    img: `https://picsum.photos/seed/${i+50}/600/800` 
-                });
-            }
-            return data;
-        }
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-        let inventory = JSON.parse(localStorage.getItem('area11_futuro_v4')) || createDatabase();
-        let currentEdit = null;
+        // ==========================================
+        // CONFIGURA TUS DATOS DE FIREBASE AQUÍ ABAJO
+        // ==========================================
+       const firebaseConfig = {
+    apiKey: "AIzaSyBbUc7dwOvUHjpyWZziVv91P53om6R9lJc",
+    authDomain: "area-de-11.firebaseapp.com",
+    databaseURL: "https://area-de-11-default-rtdb.firebaseio.com",
+    projectId: "area-de-11",
+    storageBucket: "area-de-11.firebasestorage.app",
+    messagingSenderId: "1007809507162",
+    appId: "1:1007809507162:web:4bb14b8a860872f5d18d63"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const inventoryRef = ref(db, 'productos');
+
+        let inventory = [];
+        let currentEditId = null;
+
+        // Cargar datos en tiempo real
+        onValue(inventoryRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                inventory = data;
+            } else {
+                // Crear 67 productos base si la nube está vacía
+                inventory = Array.from({length: 67}, (_, i) => ({
+                    id: i + 1,
+                    name: `PROTOCOL ${i + 1}`,
+                    price: `$1,299 MXN`,
+                    img: `https://picsum.photos/seed/${i + 100}/600/800`
+                }));
+                set(inventoryRef, inventory);
+            }
+            render();
+        });
 
         function render() {
             const grid = document.getElementById('catalog-grid');
@@ -247,61 +214,60 @@
             inventory.forEach(p => {
                 grid.innerHTML += `
                     <div class="product-card">
-                        <img src="${p.img}" class="product-image" onclick="showP(${p.id})">
+                        <img src="${p.img}" class="product-image" onclick="window.showP(${p.id})">
                         <div class="product-info">
                             <span class="product-name">${p.name}</span>
                             <span class="product-price">${p.price}</span>
-                            <button class="edit-btn" onclick="openEdit(${p.id})">EDIT_RECORD</button>
+                            <button class="edit-btn" onclick="window.openEdit(${p.id})">EDIT_CLOUD_DATA</button>
                         </div>
                     </div>
                 `;
             });
         }
 
-        function checkAdmin() {
-            const code = document.getElementById('admin-code').value;
-            if(code === '04050607') document.body.classList.add('admin-mode');
-            else document.body.classList.remove('admin-mode');
-        }
-
-        function showP(id) {
+        // Funciones para el modo Admin y Visualización
+        window.showP = (id) => {
             const p = inventory.find(x => x.id === id);
             document.getElementById('view-img').src = p.img;
             document.getElementById('view-title').innerText = p.name;
             document.getElementById('view-cost').innerText = p.price;
             document.getElementById('view-modal').style.display = 'flex';
-        }
+        };
 
-        function openEdit(id) {
-            currentEdit = id;
+        window.openEdit = (id) => {
+            currentEditId = id;
             const p = inventory.find(x => x.id === id);
             document.getElementById('in-name').value = p.name;
             document.getElementById('in-price').value = p.price;
             document.getElementById('in-img').value = p.img;
             document.getElementById('edit-modal').style.display = 'flex';
-        }
+        };
 
-        function saveData() {
-            const p = inventory.find(x => x.id === currentEdit);
-            p.name = document.getElementById('in-name').value;
-            p.price = document.getElementById('in-price').value;
-            p.img = document.getElementById('in-img').value;
-            localStorage.setItem('area11_futuro_v4', JSON.stringify(inventory));
-            render();
-            closeM();
-        }
+        window.saveToFirebase = () => {
+            const index = inventory.findIndex(x => x.id === currentEditId);
+            inventory[index].name = document.getElementById('in-name').value;
+            inventory[index].price = document.getElementById('in-price').value;
+            inventory[index].img = document.getElementById('in-img').value;
+            
+            set(inventoryRef, inventory).then(() => {
+                window.closeM();
+            }).catch(err => alert("Error al guardar: Asegúrate de poner las reglas de Firebase en true"));
+        };
 
-        function closeM() {
-            document.getElementById('view-modal').style.display = 'none';
-            document.getElementById('edit-modal').style.display = 'none';
-        }
+        window.closeM = () => {
+            document.querySelectorAll('.modal').forEach(m => m.style.display = 'none');
+        };
 
-        // Cerrar al hacer clic fuera del cuadro
+        window.checkAdmin = () => {
+            if(document.getElementById('admin-code').value === '04050607') 
+                document.body.classList.add('admin-mode');
+            else 
+                document.body.classList.remove('admin-mode');
+        };
+
         window.onclick = function(event) {
-            if (event.target.className === 'modal') closeM();
-        }
-
-        render();
+            if (event.target.className === 'modal') window.closeM();
+        };
     </script>
 </body>
 </html>
